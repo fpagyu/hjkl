@@ -13,6 +13,6 @@ class FlowerService(object):
 
     @classmethod
     def get_by_pk(cls, pk):
-        session = sessionmaker(bind=engine)()
+        session = sessionmaker(bind=engine, autocommit=True)()
 
         return session.query(Flower).filter_by(id=pk).first()
