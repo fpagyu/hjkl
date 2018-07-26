@@ -1,5 +1,6 @@
 # coding: utf-8
-from  flask import jsonify
+from flask import request, jsonify
+from werkzeug.utils import secure_filename
 
 from apps import app
 
@@ -8,6 +9,18 @@ from apps.flowers.services.flowers import FlowerService
 
 @app.route("/flowers/testing")
 def testing():
+    if request.method == "GET":
+        # "?username="   request.args.get
+        username = request.args.get('username')
+        session_id = request.cookies.get('sessionid', '')
+
+    if request.method == "POST":
+        username = request.form['username']
+        password = request.form['password']
+        # file upload
+        f = request.files['the_file']
+        f.save('/tmp/' + secure_filename(f.filename))
+
     return "aaaa"
 
 
