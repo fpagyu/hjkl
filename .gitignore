@@ -1,0 +1,6 @@
+venv/
+.idea/
+.example/
+__pycache__/
+*.py[cod]
+.python-version
