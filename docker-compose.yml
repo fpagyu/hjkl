@@ -1,18 +1,21 @@
 version: '3'
 
 services:
-  web:
+  hjkl:
     build: .
-    container_name: hjkl
+    image: hjkl:latest
+#    container_name: hjkl
     networks:
       - kong-net
-    ports:
-      - "5000:5000"
+    expose:
+      - "5000"
     volumes:
       - /home/jvm/code/hjkl:/app
     environment:
       - FLASK_APP=app.py
       - FLASK_ENV=development
+    deploy:
+      replicas: 5
     command: ["flask", "run", "-h", "0.0.0.0", "-p", "5000"]
 
   cassandra:
@@ -20,8 +23,8 @@ services:
     container_name: kong-database
     networks:
       - kong-net
-    ports:
-      - "9042:9042"
+    expose:
+      - "9042"
     volumes:
       - /home/jvm/var/lib/cassandra:/var/lib/cassandra
 

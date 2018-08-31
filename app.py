@@ -4,6 +4,6 @@ from hjkl import app
 from flask import jsonify
 
 
-@app.route('/hjkl/index')
+@app.route('/hjkl')
 def index():
     return jsonify(msg="Hello, Flask!")
