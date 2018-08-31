@@ -1,0 +1,50 @@
+version: '3'
+
+services:
+  web:
+    build: .
+    container_name: hjkl
+    networks:
+      - kong-net
+    ports:
+      - "5000:5000"
+    volumes:
+      - /home/jvm/code/hjkl:/app
+    environment:
+      - FLASK_APP=app.py
+      - FLASK_ENV=development
+    command: ["flask", "run", "-h", "0.0.0.0", "-p", "5000"]
+
+  cassandra:
+    image: cassandra:3
+    container_name: kong-database
+    networks:
+      - kong-net
+    ports:
+      - "9042:9042"
+    volumes:
+      - /home/jvm/var/lib/cassandra:/var/lib/cassandra
+
+  kong:
+    image: kong:latest
+    container_name: kong
+    networks:
+      - kong-net
+    depends_on:
+      - cassandra
+    ports:
+      - "8000:8000"
+      - "8443:8443"
+      - "8001:8001"
+      - "8444:8444"
+    environment:
+      - KONG_DATABASE=cassandra
+      - KONG_CASSANDRA_CONTACT_POINTS=kong-database
+      - KONG_PROXY_ACCESS_LOG=/dev/stdout
+      - KONG_ADMIN_ACCESS_LOG=/dev/stdout
+      - KONG_PROXY_ERROR_LOG=/dev/stderr
+      - KONG_ADMIN_ERROR_LOG=/dev/stderr
+      - KONG_ADMIN_LISTEN=0.0.0.0:8001, 0.0.0.0:8444 ssl
+
+networks:
+  kong-net:
