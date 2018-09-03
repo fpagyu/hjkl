@@ -15,7 +15,7 @@ services:
       - FLASK_APP=app.py
       - FLASK_ENV=development
     deploy:
-      replicas: 5
+      replicas: 3
     command: ["flask", "run", "-h", "0.0.0.0", "-p", "5000"]
 
   cassandra:
@@ -48,6 +48,15 @@ services:
       - KONG_PROXY_ERROR_LOG=/dev/stderr
       - KONG_ADMIN_ERROR_LOG=/dev/stderr
       - KONG_ADMIN_LISTEN=0.0.0.0:8001, 0.0.0.0:8444 ssl
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 20s
 
 networks:
   kong-net:
+
+volumes:
+  db-data:
